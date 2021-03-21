@@ -13,6 +13,11 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'views/index.html'))
 })
 
-app.listen(httpPort, function () {
-  console.log(`Listening on port ${httpPort}!`)
-})
+//app.listen(httpPort, function () {
+  //console.log(`Listening on port ${httpPort}!`)
+//})
+
+// listen for requests :)
+const listener = app.listen(process.env.PORT, () => {
+  console.log("Your app is listening on port " + listener.address().port);
+});
