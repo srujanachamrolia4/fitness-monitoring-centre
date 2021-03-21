@@ -6,6 +6,9 @@
   "engines": {
     "node": "12"
   },
+  "scripts": {
+    "start":"node server.js"
+  },
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.19.0",
