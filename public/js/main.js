@@ -5,7 +5,6 @@ $(function () {
     //===== Prealoder
 
     $('.preloader').delay(500).fadeOut(500);
-
     
     //===== Sticky
 
@@ -89,6 +88,46 @@ $(function () {
         $('.sign-up-area').hide();
     });
 
+    //BMI calculator
+    var calculateBMI = (weight, heightfeet, heightinch) => {
+        var height = heightfeet*30.48 + heightinch*2.54;
+        if (weight > 0 && height > 0) {
+            var finalBmi = (weight / (height * height)) * 10000;
+            $('.bmi-value').text(new Number(finalBmi).toFixed(2));
+            $('.bmi-value').css('font-weight','bold');
+
+            if (finalBmi < 18.5) {
+                $('.bmi-meaning').text("Underweight");
+                $('.bmi-meaning').css('color','orange');
+            }
+            if (finalBmi > 18.5 && finalBmi < 25) {
+                $('.bmi-meaning').text("Normal");
+                $('.bmi-meaning').css('color','green');
+            }
+            if (finalBmi > 25 && finalBmi < 30) {
+                $('.bmi-meaning').text("Overweight");
+                $('.bmi-meaning').css('color','orange');
+            }
+            if (finalBmi > 30 && finalBmi < 35) {
+                $('.bmi-meaning').text("Obese");
+                $('.bmi-meaning').css('color','red');
+            }
+            if (finalBmi > 35) {
+                $('.bmi-meaning').text("Extremely Obese");
+                $('.bmi-meaning').css('color','red');
+            }
+        }
+    }
+
+    var doLogin = (user) => {
+        if(user != undefined){
+            $('.login-area').html('Welcome, '+ user.name + '<br><br>Your BMI is <span class="bmi-value"></span> and you are <span class="bmi-meaning"></span>');
+            $("a[href='#login']").hide();
+            $("a[href='#logout']").show();
+            calculateBMI(parseInt(user.weight), parseInt(user.heightfeet), parseInt(user.heightinches));
+        }
+    }
+
     $(".login-form").submit(function(e) {
         e.preventDefault();
         var actionurl = $(this).attr('action');
@@ -100,13 +139,21 @@ $(function () {
                 $('.login-msg').html('Invalid credentials.');
                 $('.login-msg').addClass('red');
             }else{
-                $('.login-area').html('Welcome, '+data);
-                $.cookie("login-user", data, { path: '/' });
-                $("a[href='#login']").hide();
-                $("a[href='#logout']").show();
+                var user = data[0];
+                doLogin(user);
+                $.cookie("login-user", user.email, { path: '/' });
             }
         });
     });
+
+    //login from cookie
+    var useremail = $.cookie("login-user");
+    if(useremail != undefined){
+        $.get("/users/"+useremail, function(data, status){
+            var user = data[0];
+            doLogin(user);
+        });
+    }
 
     $("a[href='#logout']").click(function(e){
         $.cookie("login-user", null);
@@ -122,18 +169,22 @@ $(function () {
         var name = params[0].split('=')[1] != undefined ? params[0].split('=')[1].replaceAll('%20',' '):params[0].split('=')[1] ;
         var email = params[1]!=undefined ? params[1].split('=')[1] != undefined ? params[1].split('=')[1].replace('%40','@'):params[1].split('=')[1] : params[1];
         var pass = params[2]!=undefined ? params[2].split('=')[1]:params[2];
-        var heightfeet = params[3]!=undefined ? params[3].split('=')[1]:params[3];
-        var heightinch = params[4] != undefined ? params[4].split('=')[1]:params[4];
-        var weight = params[5]!=undefined ? params[5].split('=')[1]:params[2];
+        var heightfeet = params[5]!=undefined ? params[5].split('=')[1]:params[5];
+        var heightinch = params[6] != undefined ? params[6].split('=')[1]:params[6];
+        var weight = params[7]!=undefined ? params[7].split('=')[1]:params[7];
+        var age = params[3]!=undefined ? params[3].split('=')[1]:params[3];
+        var gender = params[4]!=undefined ? params[4].split('=')[1]:params[4];
 
         var userdata = {
             "id": "",
             "name": name, 
             "email": email,
             "password": pass, 
-            "height-feet": heightfeet,
-            "height-inches": heightinch,
-            "weight": weight
+            "heightfeet": heightfeet,
+            "heightinches": heightinch,
+            "weight": weight,
+            "age":age,
+            "gender":gender
         };
 
         if(email != undefined){
