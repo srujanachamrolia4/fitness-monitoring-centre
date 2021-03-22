@@ -326,9 +326,11 @@
                                 <input type="text" name="name" placeholder="Enter your name" required>
                                 <input type="email" name="email" placeholder="Enter email" required>
                                 <input type="password" name="password" placeholder="Enter password" required>
-                                <input type="number" name="height-feet" placeholder="Enter Height (Feet)" required>
-                                <input type="number" name="height-inches" placeholder="Enter Height (Inches)" required>
-                                <input type="number" name="height-weight" placeholder="Enter Weight (Kg)" required>
+                                <input type="number" name="age" placeholder="Enter Age" min="10" max="100" required>
+                                <input type="radio" id="male" name="gender" value="male">Male  <input type="radio" id="female" name="gender" value="female">Female
+                                <input type="number" name="height-feet" placeholder="Enter Height (Feet)" min="4" max="7" required>
+                                <input type="number" name="height-inches" placeholder="Enter Height (Inches)" max="12" required>
+                                <input type="number" name="height-weight" placeholder="Enter Weight (Kg)" min="20" max="120" required>
                                 <button type="submit" class="main-btn sign-up-btn">Sign-Up</button>
                                 <div class="alert-msg"></div>
                             </form>
