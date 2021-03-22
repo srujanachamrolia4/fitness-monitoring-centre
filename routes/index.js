@@ -8,18 +8,11 @@ var users =[
         "name": "Srujana", 
         "email": "srujana.chamrolia4@gmail.com",
         "password": "12345", 
-        "height-feet": "5",
-        "height-inches": "6",
-        "weight": "82"
-    },
-    {
-        "id": 2,
-        "name": "Srujana", 
-        "email": "srujana.chamrolia2@gmail.com",
-        "password": "12345", 
-        "height-feet": "5",
-        "height-inches": "4",
-        "weight": "89"
+        "heightfeet": "5",
+        "heightinches": "6",
+        "weight": "82",
+        "age":"22",
+        "gender":"female"
     }
 ]
 
@@ -60,7 +53,7 @@ router.get('/login/:email/:password', function(req, res) {
    
     if(selectedusers.length > 0){
         res.status(200);
-        res.send(selectedusers[0].name);
+        res.send(selectedusers);
     }else{
         res.status(200);
         res.send("mismatch");
