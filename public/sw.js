@@ -32,7 +32,6 @@ var filesToCache = [
   '/js/bootstrap-4.5.0.min.js',
   '/js/jquery-3.5.1-min.js',
   '/js/jquery.cookie.js',
-  '/js/jquery.counterup.min.js',
   '/js/jquery.easing.min.js',
   '/js/main.js',
   '/js/modernizr-3.7.1.min.js',
