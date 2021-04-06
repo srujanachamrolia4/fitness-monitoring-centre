@@ -1,6 +1,6 @@
 {
     "name": "Fitness Monitoring Centre",
-    "short_name": "FMC",
+    "short_name": "Fitness Monitoring Centre",
     "description": "This is  a fitness monitory PWA app which provides a user with some useful features to maintain his/her fitness.",
     "icons": [
       {
@@ -46,8 +46,8 @@
       }
     ],
     "lang": "en-US",
-    "start_url": "/index.html",
-    "display": "fullscreen",
+    "start_url": "/",
+    "display": "standalone",
     "background_color": "#2A3443",
     "theme_color": "#2A3443"
   }

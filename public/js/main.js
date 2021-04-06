@@ -1,6 +1,19 @@
 $(function () {
     "use strict";
 
+    //=====registering service worker
+    if('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('../sw.js');
+    };
+
+    if (!navigator.onLine) {
+        toastr.error('You are now offline..');
+    }
+
+    if (navigator.onLine) {
+        toastr.info('You are now online..');
+    }
+
     //===== Prealoder
     $('.preloader').delay(500).fadeOut(500);
     
@@ -15,6 +28,39 @@ $(function () {
             $(".navbar .navbar-brand img").attr("src", "images/logo.png");
         }
     });
+
+    //==== user email from cookie
+    var useremail = $.cookie("login-user");
+
+    //===== load reminders values
+    var setReminders = function (){
+        $.get('/users/'+useremail, function(data, status){
+            if(data != undefined && data.length > 0 && data[0].reminders != undefined){
+                if(data[0].reminders.sleep){
+                    $('input[name="sleep"]').attr("checked","checked"); 
+                }
+                if(data[0].reminders.water){
+                    $('input[name="water"]').attr("checked","checked"); 
+                }
+                if(data[0].reminders.exercise){
+                    $('input[name="exercise"]').attr("checked","checked"); 
+                }
+                if(data[0].reminders.handwash){
+                    $('input[name="handwash"]').attr("checked","checked"); 
+                }
+                if(data[0].reminders.walk){
+                    $('input[name="walk"]').attr("checked","checked"); 
+                }
+            }
+        });
+    }
+
+    if(useremail != "null"){
+        setReminders();
+        $('.update-section').show();
+    }else{
+        $('.update-section').hide();
+    }
 
     //===== Section Menu Active
     var scrollLink = $('.page-scroll');
@@ -116,7 +162,7 @@ $(function () {
 
     var doLogin = (user) => {
         if(user != undefined){
-            $('.login-area').html('Welcome, '+ user.name + '<br><br>Your BMI is <span class="bmi-value"></span> and you are <span class="bmi-meaning"></span>');
+            $('.login-section').html('Welcome, '+ user.name + '<br><br>Your BMI is <span class="bmi-value"></span> and you are <span class="bmi-meaning"></span>');
             $("a[href='#login']").hide();
             $("a[href='#logout']").show();
             calculateBMI(parseInt(user.weight), parseInt(user.heightfeet), parseInt(user.heightinches));
@@ -137,12 +183,12 @@ $(function () {
                 var user = data[0];
                 doLogin(user);
                 $.cookie("login-user", user.email, { path: '/' });
+                $('.update-section').show();
             }
         });
     });
 
     //login from cookie
-    var useremail = $.cookie("login-user");
     if(useremail != undefined){
         $.get("/users/"+useremail, function(data, status){
             var user = data[0];
@@ -204,17 +250,104 @@ $(function () {
             });
         }
     });
-    //registering service worker
-    if('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('../sw.js');
-    };
+
+    $(".sign-up-form").submit(function(e) {
+        e.preventDefault();
+        
+    });
+
+    $('form[name="reminder-form"]').submit(function(e) {
+        e.preventDefault();
+        if(useremail == undefined){
+            $('.reminders-alert-msg').html("You need to login to use this feature...");
+            $('.reminders-alert-msg').css("color","red");
+            return;
+        }
+
+        var actionurl = $(this).attr('action');
+        var params = $(this).serialize();
+        var reminderJson = {};
+        reminderJson.sleep = params.indexOf("sleep") != -1;
+        reminderJson.water = params.indexOf("water") != -1;
+        reminderJson.exercise = params.indexOf("exercise") != -1;
+        reminderJson.handwash = params.indexOf("handwash") != -1;
+        reminderJson.walk = params.indexOf("walk") != -1;
+
+        if(Object.keys(reminderJson).length > 0 && useremail != undefined){
+            var finalRemindersJson = {
+                "email": useremail,
+                "reminders": reminderJson
+            }
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: actionurl,
+                data: JSON.stringify(finalRemindersJson),
+                dataType: "json",
+                statusCode: {
+                    202: function() {
+                        $('.reminders-alert-msg').html("Your reminders successfully set.");
+                        $('.reminders-alert-msg').css("color","green");
+                    }
+                }
+            });
+        }
+    });
+
+    $('.update-form').submit(function(e) {
+        e.preventDefault();
+        if(useremail == undefined){
+            $('.update-alert-msg').html("You need to login to use this feature...");
+            $('.update-alert-msg').css("color","red");
+            return;
+        }
+
+        var actionurl = $(this).attr('action');
+        var params = $(this).serialize().split("&");
+        var heightfeet = params[0]!=undefined ? params[0].split('=')[1]:params[0];
+        var heightinch = params[1] != undefined ? params[1].split('=')[1]:params[1];
+        var weight = params[2]!=undefined ? params[2].split('=')[1]:params[2];
+
+        var postJson = { 
+            "heightfeet": heightfeet, 
+            "heightinch" : heightinch, 
+            "weight": weight, 
+            "useremail": useremail
+        };
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: actionurl,
+            data: JSON.stringify(postJson),
+            dataType: "json",
+            statusCode: {
+                202: function() {
+                    $('.update-alert-msg').html("Your reminders successfully set.");
+                    $('.update-alert-msg').css("color","green");
+                }
+            }
+        });
+    });
+
+    $('select[name="theme-color"]').change(function(){
+        var themeColor = $(this).val();
+        if(themeColor == "green"){
+            $('.header-hero').css('background-image','url(images/banner-green-bg.svg)');
+            $('.footer-area').append('<div id="footer-style"><style>.footer-area::before {background-image: url(../images/footer-green-bg.svg)!important;}</style></div>');
+        }
+        if(themeColor == "blue"){
+            $('.header-hero').css('background-image','url(images/banner-bg.svg)');
+            $('.footer-area').append('<div id="footer-style"><style>.footer-area::before {background-image: url(../images/footer-bg.svg)!important;}</style></div>');
+        }
+        if(themeColor == "red"){
+            $('.header-hero').css('background-image','url(images/banner-red-bg.svg)');
+            $('.footer-area').append('<div id="footer-style"><style>.footer-area::before {background-image: url(../images/footer-red-bg.svg)!important;}</style></div>');
+        }
+        if(themeColor == "red-pink-shade"){
+            $('.header-hero').css('background-image','url(images/banner-red-pink-bg.svg)');
+            $('.footer-area').append('<div id="footer-style"><style>.footer-area::before {background-image: url(../images/footer-red-pink-bg.svg)!important;}</style></div>');
+        }
+    });
 });
-
-window.onload = () => {
-    'use strict';
-
-    //registering service worker
-    if('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js');
-    };
-}

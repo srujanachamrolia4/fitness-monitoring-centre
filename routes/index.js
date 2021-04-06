@@ -12,7 +12,14 @@ var users =[
         "heightinches": "6",
         "weight": "82",
         "age":"22",
-        "gender":"female"
+        "gender":"female",
+        "reminders": {
+            "sleep": true,
+            "water":false,
+            "exercise":false,
+            "handwash":true,
+            "walk":false
+        }
     }
 ]
 
@@ -58,6 +65,40 @@ router.get('/login/:email/:password', function(req, res) {
         res.status(200);
         res.send("mismatch");
     }
+})
+
+/* POST reminders */
+router.post('/save-reminders', function(req, res) { 
+    var remindersJson = req.body;
+    var useremail = remindersJson.email;
+    users.filter(function(user) {
+        if(user.email == useremail){
+            user.reminders = remindersJson.reminders; 
+        }
+    });
+    res.status(202);
+    res.send("saved");
+})
+
+/* POST updates to height & weight */
+router.post('/update-height-weight', function(req, res) { 
+    var receivedJson = req.body;
+    console.log(receivedJson);
+
+    var heightfeet = receivedJson.heightfeet;
+    var heightinch = receivedJson.heightinch;
+    var weight = receivedJson.weight;
+    var useremail = receivedJson.useremail;
+
+    users.filter(function(user) {
+        if(user.email == useremail){
+            user.heightfeet = heightfeet; 
+            user.heightinches = heightinch; 
+            user.weight = weight; 
+        }
+    });
+    res.status(202);
+    res.send("saved");
 })
 
 module.exports = router;

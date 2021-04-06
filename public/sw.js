@@ -5,6 +5,7 @@ var filesToCache = [
   '/css/default.css',
   '/css/font-awesome.min.css',
   '/css/style.css',
+  '/css/toastr.min.css',
   '/fonts/fontawesome-webfont.eot',
   '/fonts/fontawesome-webfont.svg',
   '/fonts/fontawesome-webfont.ttf',
@@ -18,10 +19,12 @@ var filesToCache = [
   '/images/icons/icon-384x384.png',
   '/images/icons/icon-512x512.png',
   '/images/banner-bg.svg',
+  '/images/banner-green-bg.svg',
   '/images/dietician-contact.png',
   '/images/dietplans.png',
   '/images/favicon.png',
   '/images/footer-bg.svg',
+  '/images/footer-green-bg.svg',
   '/images/header-hero.png',
   '/images/logo-2.png',
   '/images/logo.png',
@@ -35,7 +38,8 @@ var filesToCache = [
   '/js/jquery.easing.min.js',
   '/js/main.js',
   '/js/modernizr-3.7.1.min.js',
-  '/js/scrolling-nav.js'
+  '/js/scrolling-nav.js',
+  '/js/toastr.min.js'
 ];
 
 /* Start the service worker and cache all of the app's content */
@@ -46,6 +50,21 @@ self.addEventListener('install', function(e) {
     console.log('[Service Worker] Caching all files');
     await cache.addAll(filesToCache);
   })());
+});
+
+self.addEventListener('activate', function(e) {
+    console.log('Service Worker: Activating....');
+    e.waitUntil(
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(cacheNames.map(function(key) {
+                if( key !== cacheName) {
+                    console.log('Service Worker: Removing Old Cache', key);
+                    return caches.delete(key);
+                }
+            }));
+        })
+    );
+    return self.clients.claim();
 });
 
 /* Serve cached content when offline */

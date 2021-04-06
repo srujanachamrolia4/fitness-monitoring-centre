@@ -35,6 +35,8 @@
     <link rel="stylesheet" href="css/style.css">
 
     <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="css/toastr.min.css">
 </head>
 
 <body>
@@ -205,10 +207,7 @@
         </div> <!-- container -->
     </section>
     <!--====== SERVICES PART ENDS ======-->
-    
-    
-    <!--====== ABOUT PART START ======-->
-    
+        
     <section id="settings" class="about-area pt-70">
         <div class="container">
             <div class="row">
@@ -216,15 +215,87 @@
                     <div class="about-content mt-50 fadeInLeftBig">
                         <div class="section-title">
                             <div class="line"></div>
-                            <h3 class="title">Modern design <span> with Essential Features</span></h3>
+                            <h3 class="title">App Settings</h3>
                         </div> <!-- section title -->
-                        <p class="text">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, seiam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing.</p>
+                        <p class="text">
+                            Select Theme Color:
+                            <select name="theme-color">
+                                <option value="blue">Blue</option>
+                                <option value="red">Red</option>
+                                <option value="green">Green</option>
+                                <option value="red-pink-shade">Red-Pink-Shade</option>
+                            </select>
+                        </p>
                         <a href="#" class="main-btn">Try it Free</a>
                     </div> <!-- about content -->
                 </div>
                 <div class="col-lg-6 order-lg-first">
                     <div class="about-image text-center mt-50 fadeInRightBig">
                         <img src="images/settings.svg" alt="about">
+                    </div> <!-- about image -->
+                </div>
+            </div> <!-- row -->
+        </div> <!-- container -->
+    </section>
+
+    <section id="reminders" class="about-area pt-70">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 order-lg-first">
+                    <div class="about-content mt-50 fadeInLeftBig">
+                        <div class="section-title">
+                            <div class="line"></div>
+                            <h3 class="title">Set your reminders....</h3>
+                        </div> <!-- section title -->
+                        <p class="text">
+                        <form name="reminder-form" action="/save-reminders">
+                            <ul class="reminders">
+                                <li>
+                                    <label class="switch">
+                                        <input type="checkbox" name="sleep" value="true">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <span>Sleep</span>
+                                </li>
+                                <li>
+                                    <label class="switch">
+                                        <input type="checkbox" name="water" value="true">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <span>Water</span>
+                                </li>
+                                <li>
+                                    
+                                    <label class="switch">
+                                        <input type="checkbox" name="exercise" value="true">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <span>Exercise</span>
+                                </li>
+                                <li>
+                                    <label class="switch">
+                                        <input type="checkbox" name="handwash" value="true">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <span>Hand wash</span>
+                                </li>
+                                <li>
+                                    <label class="switch">
+                                        <input type="checkbox" name="walk" value="true">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <span>Walk</span>
+                                </li>  
+                            </ul>
+                            <div class="reminders-alert-msg"></div>
+                            <button type="submit" class="main-btn save-reminders">Save reminders</button>      
+                        </form>
+                        </p>
+                    </div> <!-- about content -->
+                </div>
+                <div class="col-lg-6 order-lg-last">
+                    <div class="about-image text-center mt-50 fadeInRightBig">
+                        <img src="images/reminders/reminders-side.png" alt="about">
                     </div> <!-- about image -->
                 </div>
             </div> <!-- row -->
@@ -295,22 +366,36 @@
     <footer class="footer-area pt-120">
         <div class="container">
             <div id="login" class="login-area">
-                <div class="row">
+                <div class="login-section">
+                    <div class="sign-up-content mt-45">
+                        <h2 class="sign-up-title">Login for more benefits</h2>
+                    </div>
+                    <div class="sign-up-form mt-50">
+                        <form class="login-form" action="/login">
+                            <input type="email" name="login-email" placeholder="Enter eamil" required>
+                            <input type="password" name="login-password" placeholder="Enter password" required>
+                            <button type="submit" class="login-btn">Login</button>
+                            <div class="login-msg"></div>
+                        </form>
+                        <a href="#sign-up">Not registered? Sign Up Here.</a>
+                    </div>
+                </div> 
+                <div class="row update-section">
                     <div>
                         <div class="sign-up-content mt-45">
-                            <h2 class="sign-up-title">Login for more benefits</h2>
+                            <h4 class="sign-up-title">Update your height & weight:</h4>
                         </div>
                         <div class="sign-up-form mt-50">
-                          <form class="login-form" action="/login">
-                              <input type="email" name="login-email" placeholder="Enter eamil" required>
-                              <input type="password" name="login-password" placeholder="Enter password" required>
-                              <button type="submit" class="login-btn">Login</button>
-                              <div class="login-msg"></div>
+                          <form class="update-form" action="/update-height-weight">
+                              <input type="number" name="height-feet" placeholder="Enter Height (Feet)" min="4" max="7" required>
+                              <input type="number" name="height-inches" placeholder="Enter Height (Inches)" max="12" required>
+                              <input type="number" name="height-weight" placeholder="Enter Weight (Kg)" min="20" max="120" required>
+                              <button type="submit" class="login-btn">Save</button>
+                              <div class="update-alert-msg"></div>
                           </form>
-                          <a href="#sign-up">Not registered? Sign Up Here.</a>
                       </div>
                     </div>
-                 </div> 
+                </div>
             </div>
             <div id="sign-up" class="sign-up-area">
                 <div class="row">
@@ -398,6 +483,9 @@
     <script src="js/jquery.easing.min.js"></script>
     <script src="js/scrolling-nav.js"></script>
     
+    <!--====== Main js ======-->
+    <script src="js/toastr.min.js"></script>
+
     <!--====== Main js ======-->
     <script src="js/main.js"></script>
     
