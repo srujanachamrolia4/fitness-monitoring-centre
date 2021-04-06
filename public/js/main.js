@@ -55,9 +55,15 @@ $(function () {
         });
     }
 
-    if(useremail != "null"){
+    if(useremail != undefined && useremail != "null"){
         setReminders();
         $('.update-section').show();
+        
+        // login from cookie
+        $.get("/users/"+useremail, function(data, status){
+            var user = data[0];
+            doLogin(user);
+        });
     }else{
         $('.update-section').hide();
     }
@@ -188,14 +194,6 @@ $(function () {
         });
     });
 
-    //login from cookie
-    if(useremail != undefined){
-        $.get("/users/"+useremail, function(data, status){
-            var user = data[0];
-            doLogin(user);
-        });
-    }
-
     $("a[href='#logout']").click(function(e){
         $.cookie("login-user", null);
         window.location.reload();
@@ -249,11 +247,6 @@ $(function () {
                 }
             });
         }
-    });
-
-    $(".sign-up-form").submit(function(e) {
-        e.preventDefault();
-        
     });
 
     $('form[name="reminder-form"]').submit(function(e) {
